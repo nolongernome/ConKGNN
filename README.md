@@ -1,4 +1,11 @@
 # ConKGNN
+
+# Requirements
+
+* Python 3.6+
+* Tensorflow/Tensorflow-gpu 1.12.0
+* Scipy 1.5.1
+* 
 # train and test：
 python train.py
 
