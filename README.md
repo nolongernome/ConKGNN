@@ -5,7 +5,7 @@
 * Python 3.7
 * Tensorflow/Tensorflow-gpu 2.4.1
 * Scipy 1.5.1
-* 
+
 # train and test：
 python train.py
 
