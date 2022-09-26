@@ -2,8 +2,8 @@
 
 # Requirements
 
-* Python 3.6+
-* Tensorflow/Tensorflow-gpu 1.12.0
+* Python 3.7
+* Tensorflow/Tensorflow-gpu 2.4.1
 * Scipy 1.5.1
 * 
 # train and test：
