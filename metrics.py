@@ -13,7 +13,7 @@ def accuracy(preds, labels):
     accuracy_all = tf.cast(correct_prediction, tf.float32)
     return tf.reduce_mean(accuracy_all)
 
-def contrastive_loss(features, labels, mask,logits_mask,temperature=0.12, base_temperature=0.1):
+def contrastive_loss(features, labels, mask,logits_mask,temperature=0.08, base_temperature=0.1):
     """
     Supervised Contrastive Loss
     The distinct batch augumentations must be concatenated in the first axis.
@@ -24,8 +24,8 @@ def contrastive_loss(features, labels, mask,logits_mask,temperature=0.12, base_t
     Returns:
         A loss scalar.
     """
-    print(temperature)
-    print(base_temperature)
+    # print(temperature)
+    # print(base_temperature)
     features=tf.nn.l2_normalize(features,dim=-1)
     f1,f2=tf.split(features,2,0)
     features = tf.concat([tf.expand_dims(f1,1), tf.expand_dims(f2,1)], 1)

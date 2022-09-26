@@ -1,7 +1,6 @@
 from __future__ import division
 from __future__ import print_function
 
-import csv
 import os
 import platform
 
@@ -16,7 +15,7 @@ from models import KGNN
 import time
 
 #Set random seed
-seed = 2
+seed = 0
 batch_size=2048
 print("seed: ",seed)
 np.random.seed(seed)
@@ -32,7 +31,7 @@ FLAGS = flags.FLAGS
 flags.DEFINE_string('dataset', dataset, 'Dataset string.')  # 'mr','ohsumed','R8','R52'
 flags.DEFINE_string('model', 'ConKGNN', 'Model string.')
 flags.DEFINE_float('learning_rate', 0.0045, 'Initial learning rate.')
-flags.DEFINE_integer('epochs', 200, 'Number of epochs to train.')
+flags.DEFINE_integer('epochs', 250, 'Number of epochs to train.')
 flags.DEFINE_integer('batch_size', 2048, 'Size of batches per epoch.')
 flags.DEFINE_integer('input_dim', 300, 'Dimension of input.')
 flags.DEFINE_integer('hidden', 96, 'Number of units in hidden layer.')  # 32, 64, 96, 128
@@ -160,8 +159,8 @@ for epoch in range(FLAGS.epochs):
 
     # Print results
     print("Epoch:", '%04d' % (epoch ), "train_loss=", "{:.5f}".format(train_loss),
-          "train_acc=", "{:.5f}".format(train_acc), "val_loss=", "{:.5f}".format(val_cost),
-          "val_acc=", "{:.5f}".format(val_acc), "test_acc=", "{:.5f}".format(test_acc),"test_cost=", "{:.5f}".format(test_cost),
+          "train_acc=", "{:.5f}".format(train_acc),
+          "val_acc=", "{:.5f}".format(val_acc),
           "time=", "{:.5f}".format(time.time() - t))
 
     if FLAGS.early_stopping > 0 and epoch > FLAGS.early_stopping and cost_val[-1] > np.mean(
@@ -177,18 +176,4 @@ print("Test set results:", "cost=", "{:.5f}".format(best_cost),
 print("Test Precision, Recall and F1-Score...")
 report1=metrics.classification_report(best_labels, preds, digits=4)
 print(report1)
-report2=metrics.classification_report(best_labels, preds, digits=4)
-print(report2)
-print("Macro average Test Precision, Recall and F1-Score...")
-report3=metrics.precision_recall_fscore_support(best_labels, preds, average='macro')
-print(report3)
-print("Micro average Test Precision, Recall and F1-Score...")
-report4=metrics.precision_recall_fscore_support(best_labels, preds, average='micro')
-print(report4)
-print("Weighted average Test Precision, Recall and F1-Score...")
-report5=metrics.precision_recall_fscore_support(best_labels, preds, average='weighted')
-print(report5)
-print("Kappa")
-Kappa = metrics.cohen_kappa_score(best_labels, preds)
-print(Kappa)
 
