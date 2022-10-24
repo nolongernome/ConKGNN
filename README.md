@@ -26,7 +26,7 @@ Our framework need to use entities and relations bewteen them in your KG.  You c
 
 ## Step 2: Prepare KG nodes file and triple file
 
-Collect all KG nodes and saved them to a nodes.txt. Transfer the KG to a triples.csv, the format should be [head,relation,tail].
+Collect all KG nodes and saved them to a node.txt. Transfer the KG to a triples.csv, the format should be [head,relation,tail].
 
 ## Step 3: Prepare the dataset.
 
