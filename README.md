@@ -10,7 +10,7 @@
 python train.py
 
 # build united graph：
-##
+## test
 Since the Authorization in DXY is very slow, and keeping people always waiting is embarrassing, I summarize the pre-training process as follow so you can use your own KG to play the model!
 
 KG format.
