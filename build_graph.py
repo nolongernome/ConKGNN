@@ -16,34 +16,32 @@ truncate = False  # whether to truncate long document
 MAX_TRUNC_LEN = 170
 
 label_list = [x.strip() for x in
-              open(os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset + '/' + dataset + '_class.txt',
+              open("data/" + dataset + '/' + dataset + '_class.txt',
                    encoding='utf-8').readlines()]
 label_list = [str(i) for i in range(0, len(label_list))]
 
 print('loading triple')
-# load triple and transform it to dic
+# load KG nodes,triple and transform them to dic
 nodes = []
 node_relation_dic = {}
-
+# load KG nodes
 classnames=dataset.split("_")
-
 for c in classnames:
-    with open(os.path.abspath('..') + '/dataset/embeddings/output/' + c + '/'+c+'_node.txt', 'r', encoding='UTF-8') as f:
+    with open('embeddings/' + c + '/'+c+'_node.txt', 'r', encoding='UTF-8') as f:
         for line in f.readlines():
             nodes.append(line.strip())
 nodes=list(set(nodes))
 print('knowledge node size: ' + str(len(nodes)) + " ...")
-
+# load triples
 node_relation_dic = {}
 for c in classnames:
-    triple = open(os.path.abspath('..') + '/dataset/embeddings/output/' + c + '/' + c + '_triples.csv', 'r', encoding='utf-8')
+    triple = open('embeddings/' + c + '/' + c + '_triples.csv', 'r', encoding='utf-8')
     for line in csv.reader(triple):
         if "," not in line[2]:
             if line[0] not in node_relation_dic:
                 node_relation_dic[line[0]] = [(line[1], line[2])]
             else:
                 node_relation_dic[line[0]].append((line[1], line[2]))
-
 for n in node_relation_dic:
     list_end = []
     new_r_e = []
@@ -54,19 +52,17 @@ for n in node_relation_dic:
     node_relation_dic[n] = new_r_e
 print(node_relation_dic[n])
 
-print('loading raw data')
-
 # load pre-trained word embeddings
 word_embeddings_dim = 300
 word_embeddings = {}
 
-with open(os.path.abspath('..') + '/dataset/embeddings/sgns.sogou.char', 'r', encoding='utf-8') as f:
+with open('embeddings/sgns.sogou.char', 'r', encoding='utf-8') as f:
     for line in f.readlines():
         data = line.split()
         word_embeddings[str(data[0])] = list(map(float, data[1:]))
-
+#load pre-trained KG embedding
 for c in classnames:
-    with open(os.path.abspath('..') + '/dataset/embeddings/output/'+c+'/'+embedding+'.hita.' + c + '.char', 'r', encoding='utf-8') as f:
+    with open('embeddings/'+c+'/'+embedding+'.hita.' + c + '.char', 'r', encoding='utf-8') as f:
         for line in f.readlines():
             data = line.split()
             try:
@@ -76,12 +72,12 @@ for c in classnames:
                 print("GRAPH EMBEDDING WARNING!")
 
 # load document list
+print('loading raw data')
 doc_name_list = []
 doc_train_list = []
 doc_test_list = []
 doc_dev_list = []
-
-with open(os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset + '/' + dataset + '_label.txt', 'r') as f:
+with open('data/' + dataset + '/' + dataset + '_label.txt', 'r') as f:
     for line in f.readlines():
         doc_name_list.append(line.strip())
         temp = line.split("\t")
@@ -94,8 +90,7 @@ with open(os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset + 
 
 # load raw text
 doc_content_list = []
-
-with open(os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset + '/' + dataset + '_clean_knowledge.txt', 'r',
+with open('data/' + dataset + '/' + dataset + '_clean_knowledge.txt', 'r',
           encoding="utf-8") as f:
     for line in f.readlines():
         doc_content_list.append(line.strip())
@@ -170,6 +165,7 @@ def build_joint_graph(start, end):
         w_size = 0
         tmp_w = []
         x_triple=[]
+        #retrieve KG nodes
         for w in doc_words:
             if w in node_relation_dic:
                 tmp_w.append(w)
@@ -178,29 +174,8 @@ def build_joint_graph(start, end):
             if w in tmp_w:
                 doc_node_relation_dic[w] = node_relation_dic[w]
                 w_size = w_size + 1
-
-        delete_node = []
-        tmp_w = list(set(tmp_w))
-        if len(tmp_w) > 1:
-            for j in range(len(tmp_w) - 1):
-                for k in range(j + 1, len(tmp_w)):
-                    if tmp_w[j] in tmp_w[k]:
-                        delete_node.append(tmp_w[j])
-                        break
-                    elif tmp_w[k] in tmp_w[j]:
-                        delete_node.append(tmp_w[k])
-                        break
-        delete_node = list(set(delete_node))
-        for d in delete_node:
-            tmp_w.remove(d)
-        for w in tmp_w:
-            doc_node_relation_dic[w] = node_relation_dic[w]
-        for w in doc_words:
-            if w in tmp_w:
-                w_size = w_size + 1
-
+        #claculate the scale of subkg
         diff = MAX_TRUNC_LEN - len(doc_words)
-        #diff=0
         doc_words_add_triples = []
         add_relations = []
         add_triples=[]
@@ -232,7 +207,7 @@ def build_joint_graph(start, end):
                 doc_words = doc_words[:MAX_TRUNC_LEN]
         x_triple.append(add_triples)
 
-        #遮蔽列表
+        #mask list
         for a in add_relations:
             if a[1] not in doc_words:
                 background_nodes.append(a[1])
@@ -549,21 +524,8 @@ print('max_subkg', max(subkg), 'min_subkg', min(subkg),
 print('training_vocab', len(vocab_train), 'test_vocab', len(vocab_test),
       'intersection', len((vocab_train) & vocab_test))
 
-path = os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset+'/'+embedding+'_knowledge_'
-path_att=os.path.abspath('..') + '/dataset/untils_dataset/output/' + dataset
+path = 'data/'+dataset+'/'+embedding+'_knowledge_'
 # dump objects
-with open(path_att+'/nodes_train_kg.csv','w',encoding='utf-8',newline='')as f:
-    f_csv = csv.writer(f)
-    for s in seg_lists_train:
-        f_csv.writerow(s)
-with open(path_att+'/nodes_dev_kg.csv','w',encoding='utf-8',newline='')as f:
-    f_csv = csv.writer(f)
-    for s in seg_lists_dev:
-        f_csv.writerow(s)
-with open(path_att+'/nodes_test_kg.csv','w',encoding='utf-8',newline='')as f:
-    f_csv = csv.writer(f)
-    for s in seg_lists_test:
-        f_csv.writerow(s)
 
 with open(path + 'ind.{}.x_adj'.format(dataset), 'wb') as f:
     pkl.dump(x_adj, f)
