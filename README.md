@@ -8,7 +8,7 @@
 
 # Downloading the united graph dataset of Drugs：
 
-Click the link below to download the united graph dataset of Drugs. This dataset include preprocessed datas. Please put them into data/
+Click the link below to download the graph dataset of Drugs. This dataset include preprocessed datas. Please put them into data/
 
 [Drugs(https://pan.baidu.com/s/13vk2tNhcJamBdT-TFUYuVA))
 
