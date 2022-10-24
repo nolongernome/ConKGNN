@@ -1,1 +1,1 @@
-Please follow the instroduction to build graph.
+Please follow the instroduction to prepare KG.
