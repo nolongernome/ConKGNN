@@ -1,7 +1,6 @@
-id	set	label
-0	train	Antibiotics
-1	dev	Antibiotics
-2	test	Antibiotics
-3	train	Antitumor and anticancer drugs
-4	dev	Antitumor and anticancer drugs
-5	test	Antitumor and anticancer drugs
+0	train	0
+1	dev	0
+2	test	0
+3	train	1
+4	dev	1
+5	test	1
