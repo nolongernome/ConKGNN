@@ -10,7 +10,7 @@
 
 Click the link below to download the graph dataset of Drugs. This dataset include preprocessed datas. Please put them into data/
 
-[Drugs(https://pan.baidu.com/s/13vk2tNhcJamBdT-TFUYuVA))
+[Drugs(https://pan.baidu.com/s/1mzADlc22yF7MdnPiO73kFg))
 
 password: Drug
 
